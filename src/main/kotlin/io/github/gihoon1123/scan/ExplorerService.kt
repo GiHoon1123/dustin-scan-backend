@@ -225,7 +225,7 @@ class ExplorerService(
             page,
             limit,
             store.count("contracts", where, *args),
-            if (deployer == null) "컨트랙트 목록 조회 성공" else "배포자별 컨트랙트 목록 조회 성공",
+            if (deployer == null) "컨트랙트 목록 조회 성공" else "배포한 컨트랙트 목록 조회 성공",
         )
     }
 
