@@ -14,16 +14,17 @@
 
 2026-11-10 로컬 JDK 21·PostgreSQL 17에서 `SCAN_TEST_DATABASE_URL=jdbc:postgresql://localhost:5546/dustin_scan_test ./gradlew build --no-daemon --max-workers=2` 통과.
 
-- 단위·경계 14개: 원본 금액 절삭, bigint 정밀도, pagination, 주소·요청 검증, ABI transfer·배열, 체인 404 구분, pending/실패/성공 대기, sync 실패 재시도, indexer 실패 응답.
+- 단위·경계 15개: 원본 금액 절삭, bigint 정밀도, pagination, 주소·요청 검증, ABI transfer·tuple/tuple 배열·중첩 배열·signed 정수·고정 bytes의 ethers 6.15 기준 벡터 6개, 체인 404 구분, pending/실패/성공 대기, sync 실패 재시도, indexer 실패 응답.
 - 실제 PostgreSQL 통합 7개: 블록·거래·영수증·ERC20·배포 저장과 재처리, 중간 파싱 실패 전체 롤백, 부분 부모 복구, 실제 HTTP 조회·응답 형식·로그, 체인 fallback, 스테이킹·스테이블코인 변환, DB health·404.
 - 원본 TypeScript 금액 유틸리티를 Node 22의 strip-types로 실행한 5개 입력 결과를 Kotlin 테스트와 대조했다.
 - 별도 Java 프로세스 API(4140)·indexer(4141)·sync(4142)를 실제 Kotlin Dustin Chain(3100)·PostgreSQL에 연결하여 모든 health 200과 블록 0부터 연속 적재를 확인했다.
 
 ## 아직 구분할 사항
 
-- 체인 전체 연동의 네이티브 전송·EVM 배포·스테이킹 시나리오는 연계 체인 준비 상태에 따라 추가 확인 중이다. 모의 체인 HTTP와 실제 체인 결과를 혼동하지 않는다.
+- 실제 Kotlin 체인과 네이티브 전송 → 영수증 확정 → DB 적재 → 거래/블록 API 조회 → 수신 잔액을 검증했다. 전송 hash `0x1086aef556dc2474beb31b97ce5b669d0be1e0602023fd49089cc8ae9e726e45`, 블록 10, status confirmed, DB 목록 적재 확인. 재현 스크립트는 `scripts/live-native-smoke.py`다.
+- EVM 배포·스테이킹 실제 체인 연동은 체인 구현 준비와 함께 추가 확인 중이다. 프록시 HTTP·금액 변환의 모의 검증을 실제 EVM 종단 간 검증으로 확대하지 않는다.
 - 원본의 모든 Jest 테스트를 일대일 이전한 것은 아니다. 인프라·프레임워크 모듈 mock 테스트 대신 Kotlin의 실제 HTTP·PostgreSQL 경계를 검증했다.
-- ABI 복합 tuple·tuple 배열·overload 전체 조합의 ethers 호환성은 추가 검증이 필요하다. 현재 단순 타입·동적 배열·함수 선택자 검증을 통과했다.
+- ABI 복합 tuple·tuple 배열·중첩 배열·함수 선택자를 ethers 기준과 대조했다. 동명 overload는 full signature로 선택하며 bare name이 모호하면 거절한다. 임의의 외부 ABI 전체에 대한 호환성 보장은 아니다.
 - 원본 sync 코드에는 자동 reorg 롤백·DB 손실 복구의 다중 노드 소유권 조정이 없다. README가 암시하던 reorg 기능을 구현 완료로 확대하지 않는다.
 - 원본은 블록의 거래·영수증이 모두 존재하면 건너뛰므로 그 하위의 토큰 전송만 누락된 과거 데이터까지 복구하지 않는다. 같은 정책을 유지한다.
 - 단일 프로세스별 동기화 잠금은 여러 sync 인스턴스의 동시 실행을 방어하지 않는다.

@@ -104,7 +104,7 @@ class ExplorerService(
     }
 
     fun account(address: String): Json {
-        val normalized = address.lowercase()
+        val normalized = normalizeAddress(address)
         val value = chain.request("/account/$normalized").obj()
         val wei = quantity(value["balance"]).toString()
         return mapOf(

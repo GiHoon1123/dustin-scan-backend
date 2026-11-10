@@ -9,7 +9,7 @@ Dustin Chain의 블록·거래·컨트랙트·토큰 전송을 수집하고 조�
 
 ## 기술
 
-Kotlin 2.3.21, JDK 21, Spring Boot 4.1.2, Spring MVC, JDBC, PostgreSQL, web3j ABI 4.12.3, JUnit 5, MockK, ktlint, Gradle 9.8.2. 기본 버전은 `dex-simulator-kotlin`과 같다.
+Kotlin 2.3.21, JDK 21, Spring Boot 4.1.2, Spring MVC, JDBC, PostgreSQL, web3j utils 4.12.3, JUnit 5, MockK, ktlint, Gradle 9.8.2. 기본 버전은 `dex-simulator-kotlin`과 같다.
 
 ## 실행
 
