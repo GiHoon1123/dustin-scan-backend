@@ -1,0 +1,39 @@
+server:
+  port: ${SERVER_PORT:${API_PORT:4000}}
+spring:
+  profiles:
+    active: ${SCAN_ROLE:api}
+  application:
+    name: dustin-scan
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_DATABASE:dustin_scan_dev}}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+  sql:
+    init:
+      mode: ${DB_INIT_MODE:never}
+springdoc:
+  swagger-ui:
+    path: /api
+  api-docs:
+    path: /api-docs
+scan:
+  role: ${SCAN_ROLE:api}
+  chain-url: ${CHAIN_URL:http://localhost:3000}
+  indexer-url: ${INDEXER_URL:http://localhost:4001}
+  cleanup-enabled: ${SCAN_CLEANUP_ENABLED:false}
+
+---
+spring:
+  config:
+    activate:
+      on-profile: indexer
+server:
+  port: ${SERVER_PORT:${INDEXER_PORT:4001}}
+---
+spring:
+  config:
+    activate:
+      on-profile: sync
+server:
+  port: ${SERVER_PORT:${SYNC_PORT:4002}}
